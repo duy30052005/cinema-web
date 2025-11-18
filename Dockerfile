@@ -1,21 +1,19 @@
-FROM openjdk:17-jdk-slim
+FROM eclipse-temurin:17-jdk
 
-# Tạo thư mục làm việc
 WORKDIR /app
 
-# Copy file Maven wrapper và pom.xml để build
+# Copy Maven files để build
 COPY mvnw .
 COPY .mvn .mvn
 COPY pom.xml .
 
-# Build dự án (skip tests để nhanh)
+# Build JAR (skip tests cho nhanh)
 RUN ./mvnw clean package -DskipTests
 
-# Copy file JAR đã build
+# Copy JAR đã build
+RUN mkdir -p target
 COPY target/*.jar app.jar
 
-# Expose port 8080 (mặc định Spring Boot)
 EXPOSE 8080
 
-# Chạy app
 ENTRYPOINT ["java", "-jar", "/app/app.jar"]
