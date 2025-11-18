@@ -1,22 +1,13 @@
-FROM eclipse-temurin:17-jdk
-
+# Stage 1: build Maven project
+FROM maven:3.9.0-eclipse-temurin-21 AS build
 WORKDIR /app
-
-# Copy Maven files để build
-COPY mvnw .
-COPY .mvn .mvn
 COPY pom.xml .
+COPY src ./src
+RUN mvn clean package -DskipTests
 
-# Cấp quyền thực thi cho mvnw (fix lỗi 126)
-RUN chmod +x mvnw
-
-# Build JAR (skip tests cho nhanh)
-RUN ./mvnw clean package -DskipTests
-
-# Copy JAR đã build (nếu build thành công)
-RUN mkdir -p target
-COPY target/*.jar app.jar
-
+# Stage 2: package JAR
+FROM eclipse-temurin:21-jdk-jammy
+WORKDIR /app
+COPY --from=build /app/target/demo-0.0.1-SNAPSHOT.jar app.jar
 EXPOSE 8080
-
-ENTRYPOINT ["java", "-jar", "/app/app.jar"]
+ENTRYPOINT ["java","-jar","app.jar"]
