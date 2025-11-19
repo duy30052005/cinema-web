@@ -14,6 +14,8 @@ import com.nimbusds.jose.crypto.MACSigner;
 import com.nimbusds.jose.crypto.MACVerifier;
 import com.nimbusds.jwt.JWTClaimsSet;
 import com.nimbusds.jwt.SignedJWT;
+import com.resend.Resend;
+import com.resend.services.emails.model.CreateEmailOptions;
 import jakarta.mail.MessagingException;
 import jakarta.mail.internet.MimeMessage;
 import lombok.*;
@@ -42,9 +44,12 @@ import java.util.Optional;
 @FieldDefaults(level = AccessLevel.PRIVATE,makeFinal = true)
 public class AuthenticationService {
     UserRepository userRepository;
-    JavaMailSender mailSender;
     ResetCodeStorage codeStorage;
     PasswordEncoder passwordEncoder;
+    @Value("${RESEND_API_KEY}")
+    static String apiKey;
+    @Value("${RESEND_FROM}")
+    static String from;
 
 
     private static final String CHARACTERS = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
@@ -118,14 +123,28 @@ public class AuthenticationService {
         }
     }
 
-    public void sendResetCodeEmail(String to, String code) throws MessagingException {
-        MimeMessage message = mailSender.createMimeMessage();
-        MimeMessageHelper helper = new MimeMessageHelper(message, true);
-        helper.setTo(to);
-        helper.setSubject("Mã đặt lại mật khẩu");
-        helper.setText("Mã đặt lại mật khẩu của bạn là: <b>" + code + "</b>. Mã này có hiệu lực trong 5 phút.", true);
-        mailSender.send(message);
+    public void sendResetCodeEmail(String to, String code) {
+        Resend resend = new Resend(apiKey);
+
+        String html = "Mã đặt lại mật khẩu của bạn là: <b>" + code + "</b>. Mã này có hiệu lực trong 5 phút.";
+
+        // Sử dụng Builder của CreateEmailOptions
+        CreateEmailOptions options = CreateEmailOptions.builder()
+                .from(from)      // Ví dụ: "Acme <onboarding@resend.dev>"
+                .to(to)
+                .subject("Mã đặt lại mật khẩu")
+                .html(html)
+                .build();
+
+        try {
+            resend.emails().send(options);
+            log.info("Reset email sent successfully to {}", to);
+        } catch (Exception e) {
+            log.error("Failed to send reset email: {}", e.getMessage(), e);
+            throw new RuntimeException("Email gửi thất bại", e);
+        }
     }
+
 
     public String requestPasswordReset(String email) throws MessagingException {
         Optional<User> userOptional = userRepository.findByEmail(email);
