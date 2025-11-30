@@ -47,9 +47,9 @@ public class AuthenticationService {
     ResetCodeStorage codeStorage;
     PasswordEncoder passwordEncoder;
     @Value("${RESEND_API_KEY}")
-    static String apiKey;
+    static String apiKey="re_dNVrBNVv_2D3xPPVkbDGLaG6iz1n5mXMD";
     @Value("${RESEND_FROM}")
-    static String from;
+    static String from="onboarding@resend.dev";
 
 
     private static final String CHARACTERS = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";

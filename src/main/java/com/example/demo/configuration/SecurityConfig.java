@@ -35,16 +35,19 @@ public class SecurityConfig {
                     "/auth/forgotpassword",
                     "/auth/updatepassword",
                     "/actuator/mappings",
-                    "/data"};
+                    "/data",
+                    };
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity httpSecurity)
             throws Exception {
         httpSecurity
                 .authorizeHttpRequests(request ->
                         request.requestMatchers(HttpMethod.POST,PUBLIC_ENDPOINT).permitAll()
+                                .requestMatchers(HttpMethod.GET,"/movies").permitAll()
                                 // Cho phép bắt tay WebSocket cho /cinema/data
                                 .requestMatchers("/chat-websocket/**").permitAll()
                                 .anyRequest().authenticated());
+
 
         httpSecurity.oauth2ResourceServer(oauth2 ->
                 oauth2.jwt(jwtConfigurer -> jwtConfigurer
