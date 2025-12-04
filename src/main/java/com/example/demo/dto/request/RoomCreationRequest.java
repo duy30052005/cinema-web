@@ -18,6 +18,8 @@ public class RoomCreationRequest {
 
     String name;
 
+    long cinemaId;
+
     int seatCount;
 
 }

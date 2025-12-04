@@ -29,7 +29,7 @@ public class SecurityConfig {
 
     @Value("${jwt.signerKey}")
     private String signerKey;
-    private final String[] PUBLIC_ENDPOINT = {"/users",
+    private final String[] POST_PUBLIC_ENDPOINT = {"/users",
                     "/auth/token",
                     "/auth/introspect",
                     "/auth/forgotpassword",
@@ -37,13 +37,17 @@ public class SecurityConfig {
                     "/actuator/mappings",
                     "/data",
                     };
+    private final String[] GET_PUBLIC_ENDPOINT = {
+            "/movies",// Cho phép xem chi tiết phim
+            "/cinemas",// Cho phép xem chi tiết rạp
+    };
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity httpSecurity)
             throws Exception {
         httpSecurity
                 .authorizeHttpRequests(request ->
-                        request.requestMatchers(HttpMethod.POST,PUBLIC_ENDPOINT).permitAll()
-                                .requestMatchers(HttpMethod.GET,"/movies").permitAll()
+                        request.requestMatchers(HttpMethod.POST,POST_PUBLIC_ENDPOINT).permitAll()
+                                .requestMatchers(HttpMethod.GET,GET_PUBLIC_ENDPOINT).permitAll()
                                 // Cho phép bắt tay WebSocket cho /cinema/data
                                 .requestMatchers("/chat-websocket/**").permitAll()
                                 .anyRequest().authenticated());

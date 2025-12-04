@@ -5,6 +5,7 @@ import com.example.demo.dto.request.RoomUpdateRequest;
 import com.example.demo.dto.request.SeatCreationRequest;
 import com.example.demo.dto.response.RoomResponse;
 import com.example.demo.dto.response.SeatResponse;
+import com.example.demo.entity.Cinemas;
 import com.example.demo.entity.Room;
 import com.example.demo.entity.Seat;
 import com.example.demo.entity.Type;
@@ -12,6 +13,7 @@ import com.example.demo.exception.AppException;
 import com.example.demo.exception.ErrolCode;
 import com.example.demo.mapper.RoomMapper;
 import com.example.demo.mapper.UserMapper;
+import com.example.demo.repository.CinemasRepository;
 import com.example.demo.repository.RoomRepository;
 import com.example.demo.repository.SeatRepository;
 import lombok.AccessLevel;
@@ -32,36 +34,51 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE,makeFinal = true)
 public class RoomService {
-    private final RoomMapper roomMapper;
-    private final RoomRepository roomRepository;
-    private final SeatService seatService;
-    private final SeatRepository seatRepository;
+    RoomMapper roomMapper;
+    RoomRepository roomRepository;
+    SeatService seatService;
+    SeatRepository seatRepository;
+    CinemasRepository cinemasRepository;
 
     @Transactional
     public RoomResponse create(RoomCreationRequest request) {
+        // --- BƯỚC 1: KIỂM TRA RẠP (LOGIC MỚI) ---
+
+        // Tìm rạp theo ID gửi lên (Giả sử trong request có field cinemaId)
+        Cinemas cinema = cinemasRepository.findById(request.getCinemaId())
+                .orElseThrow(() -> new RuntimeException("Rạp chiếu không tồn tại!")); // Nên dùng AppException
+
+        // Kiểm tra trạng thái của Rạp
+        if (!"ACTIVE".equals(cinema.getStatus())) {
+            throw new RuntimeException("Rạp đang ngừng hoạt động, không thể tạo phòng!");
+        }
+
+        //BƯỚC 2: TẠO PHÒNG
         Room room = roomMapper.toRoom(request);
+
+        // Liên kết Phòng với Rạp vừa tìm được
+        room.setCinema(cinema);
+
+        // Gán trạng thái mặc định cho Phòng
+        room.setStatus("ACTIVE");
+
         room = roomRepository.save(room);
         Long roomId = room.getRoomId();
 
+        //BƯỚC 3: TẠO GHẾ (LOGIC CŨ GIỮ NGUYÊN)
         int seatCount = request.getSeatCount();
-        Set<Seat> createdSeats = new HashSet<>();
+        // (Lưu ý: Set createdSeats ở đây chỉ để logic, ko cần thiết nếu không dùng lại)
+
         for (int i = 1; i <= seatCount; i++) {
             SeatCreationRequest seatRequest = SeatCreationRequest.builder()
-                    .seatStatus("Trống")
+                    .seatStatus("Trống") // Hoặc "AVAILABLE" nếu chuẩn hóa
                     .roomId(roomId)
                     .build();
-            SeatResponse seatResponse = seatService.createSeat(seatRequest);
-            Seat seat = seatRepository.findById(seatResponse.getSeatId())
-                    .orElseThrow(() -> new RuntimeException("Seat not found after creation"));
-            createdSeats.add(seat);
+
+            // Gọi seatService để tạo ghế
+            seatService.createSeat(seatRequest);
         }
-
-        room.setSeatCount(seatCount);
-        room = roomRepository.save(room);
-
-        RoomResponse roomResponse = roomMapper.toRoomResponse(room);
-        // Không cần gán seatResponses nữa vì RoomResponse không có trường seats
-        return roomResponse;
+        return roomMapper.toRoomResponse(room);
     }
     public List<RoomResponse> getAllRoom() {
         log.info("Get all Room");

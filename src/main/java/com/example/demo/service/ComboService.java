@@ -10,6 +10,7 @@ import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -23,12 +24,14 @@ public class ComboService {
     private final ComboMapper comboMapper;
     private final ComboRepository comboRepository;
 
+    @PreAuthorize("hasRole('ADMIN')")
     public ComboResponse createCombo(ComboCreationRequest request){
         log.info("Create combo");
         Combo combo= comboMapper.toCombo(request);
         comboRepository.save(combo);
         return comboMapper.toComboResponse(combo);
     }
+    @PreAuthorize("hasRole('ADMIN')")
     public ComboResponse updateCombo(ComboUpdateRequest request, Long comboId){
         log.info("Update combo");
         Combo combo = comboRepository.findById(comboId).orElse(null);

@@ -23,6 +23,8 @@ public class ShowtimeResponse {
 
     LocalDate showDate;
 
+    String status;
+
     @JsonFormat(pattern = "HH:mm") // Định dạng thời gian thành HH:mm
     LocalTime startTime;
 

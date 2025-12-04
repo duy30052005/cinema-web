@@ -16,6 +16,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.scheduling.annotation.Scheduled;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -142,6 +143,7 @@ public class BillService {
         }
         return billResponse;
     }
+    @PreAuthorize("hasRole('ADMIN')")
     @Transactional(readOnly = true)
     public List<BillResponse> getAllBills() {
         log.info("Fetching all bills");

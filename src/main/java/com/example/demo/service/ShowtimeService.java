@@ -46,6 +46,7 @@ public class ShowtimeService {
         Showtime showtime = showtimeMapper.toShowtime(request);
         showtime.setMovie(movie);
         showtime.setRoom(room);
+        showtime.setStatus("ACTIVE");
 
         // Tính endTime (ví dụ: cộng thêm duration của phim)
         LocalTime endTime = showtime.getStartTime().plusMinutes(movie.getDuration());

@@ -12,6 +12,10 @@ public class RoomUpdateRequest {
 
     String name;
 
+    long cinemaId;
+
     int seatCount;
+
+    String status;
 
 }

@@ -34,6 +34,10 @@ public class Showtime {
     @JsonFormat(pattern = "HH:mm") // Định dạng thời gian thành HH:mm
     LocalTime endTime;
 
+    @Column(name = "status")
+    String status;
+
+
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "movie_id", nullable = false)
     Movie movie;
