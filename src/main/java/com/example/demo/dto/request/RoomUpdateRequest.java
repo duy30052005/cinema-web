@@ -12,7 +12,7 @@ public class RoomUpdateRequest {
 
     String name;
 
-    long cinemaId;
+    Long cinemaId;
 
     int seatCount;
 

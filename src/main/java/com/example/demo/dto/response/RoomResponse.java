@@ -13,6 +13,8 @@ import java.util.List;
 public class RoomResponse {
     Long roomId;
 
+    Long cinemaId;
+
     String CinemaName;//cinema name
 
     String name;//room name

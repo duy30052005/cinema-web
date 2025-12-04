@@ -19,6 +19,7 @@ public interface RoomMapper {
 
     void updateRoom(@MappingTarget Room room, RoomUpdateRequest request);
 
+    @Mapping(source = "cinema.cinemaId", target = "cinemaId") // ✅ THÊM DÒNG NÀY
     @Mapping(source = "cinema.name", target = "CinemaName")
     RoomResponse toRoomResponse(Room room);
 }

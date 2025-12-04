@@ -104,17 +104,42 @@ public class RoomService {
         return roomResponse;
     }
 
-    public RoomResponse updateRequest(RoomUpdateRequest request, long room_id) {
-        Room room = roomRepository.findById(room_id)
-                .orElseThrow(() -> new RuntimeException("Room not found"));
+    public RoomResponse updateRequest(RoomUpdateRequest request, Long roomId) {
+        // 1. Tìm phòng cũ
+        Room room = roomRepository.findById(roomId)
+                .orElseThrow(() -> new RuntimeException("Room not found with id: " + roomId));
+
+        // 2. Map dữ liệu cơ bản (Tên, Số ghế...)
         roomMapper.updateRoom(room, request);
 
+        // 3. Xử lý thay đổi Rạp (Nếu có)
+        if (request.getCinemaId() != null) {
+            Cinemas newCinema = cinemasRepository.findById(request.getCinemaId())
+                    .orElseThrow(() -> new RuntimeException("Cinema not found with id: " + request.getCinemaId()));
+
+            // Kiểm tra trạng thái rạp mới (Option)
+            if (!"ACTIVE".equals(newCinema.getStatus())) {
+                throw new RuntimeException("Không thể chuyển sang rạp đang ngừng hoạt động!");
+            }
+
+            // Gán rạp mới cho phòng
+            room.setCinema(newCinema);
+        }
+
+        // 4. Lưu xuống DB
         log.info("Update Room {} successful", room.getName());
         room = roomRepository.save(room);
 
-        RoomResponse roomResponse = roomMapper.toRoomResponse(room);
-        // Loại bỏ việc lấy và gán seatResponses
-        return roomResponse;
+        // 5. Tạo Response
+        RoomResponse response = roomMapper.toRoomResponse(room);
+
+        // 🔥 FIX LỖI: Gán thủ công tên rạp mới nhất vào Response
+        // (Để đảm bảo dù Mapper có bị cache dữ liệu cũ thì dòng này vẫn ghi đè lại đúng)
+        if (room.getCinema() != null) {
+            response.setCinemaName(room.getCinema().getName());
+        }
+
+        return response;
     }
     public void deleteRoom(Long roomId) {
         roomRepository.deleteById(roomId);
