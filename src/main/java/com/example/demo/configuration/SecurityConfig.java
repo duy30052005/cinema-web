@@ -39,7 +39,9 @@ public class SecurityConfig {
                     };
     private final String[] GET_PUBLIC_ENDPOINT = {
             "/movies",// Cho phép xem chi tiết phim
-            "/cinemas",// Cho phép xem chi tiết rạp
+            "/cinemas",
+            "/rooms",
+            "showtimes"// Cho phép xem chi tiết rạp
     };
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity httpSecurity)
