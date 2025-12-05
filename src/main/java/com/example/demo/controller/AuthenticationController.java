@@ -2,16 +2,19 @@ package com.example.demo.controller;
 
 import com.example.demo.dto.request.ApiResponse;
 import com.example.demo.dto.request.AuthenticationRequest;
+import com.example.demo.dto.request.ChangePasswordRequest;
 import com.example.demo.dto.request.IntrospectRequest;
 import com.example.demo.dto.response.AuthenticationResponse;
 import com.example.demo.dto.response.IntrospectResponse;
 import com.example.demo.service.AuthenticationService;
+import com.example.demo.service.UserService;
 import com.nimbusds.jose.JOSEException;
 import lombok.AccessLevel;
 import lombok.Data;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
 import java.text.ParseException;
@@ -22,6 +25,7 @@ import java.text.ParseException;
 @RequiredArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
 public class AuthenticationController {
+    UserService userService;
     AuthenticationService authenticationService;
     @PostMapping("/token")
     ApiResponse<AuthenticationResponse> authenticate(@RequestBody AuthenticationRequest request) {
@@ -37,6 +41,33 @@ public class AuthenticationController {
         return ApiResponse.<IntrospectResponse>builder()
                 .result(result)
                 .build();
+    }
+    @PutMapping("/change-password")
+    ApiResponse<String> changePassword(@RequestBody ChangePasswordRequest request) {
+        try {
+            // Log "Username" được lấy từ SecurityContextHolder (người dùng đang đăng nhập)
+            var authentication = SecurityContextHolder.getContext().getAuthentication();
+            String currentUsername = authentication.getName();
+
+            // Gọi Service để xử lý logic đổi mật khẩu
+            // Bạn cần cập nhật phương thức này trong UserService
+            String result = userService.changePassword(
+                    currentUsername,
+                    request.getOldPassword(),
+                    request.getNewPassword()
+            );
+
+            return ApiResponse.<String>builder()
+                    .result(result)
+                    .build();
+        } catch (Exception e) {
+            log.error("Lỗi đổi mật khẩu cho người dùng {}: {}",
+                    SecurityContextHolder.getContext().getAuthentication().getName(), e.getMessage());
+            return ApiResponse.<String>builder()
+                    .code(400) // Mã lỗi
+                    .message("Đổi mật khẩu thất bại: " + e.getMessage())
+                    .build();
+        }
     }
     @PostMapping("/forgotpassword")
     ApiResponse<String> forgotPassword(@RequestBody ForgotPasswordRequest request) {

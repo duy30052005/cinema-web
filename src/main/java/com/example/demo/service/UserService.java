@@ -92,4 +92,25 @@ public class UserService {
         userRepository.deleteById(user_id);
     }
 
+    public String changePassword(String username, String oldPassword, String newPassword) {
+        // 1. Tìm người dùng
+        User user = userRepository.findByUsername(username)
+                .orElseThrow(() -> new RuntimeException("Người dùng không tồn tại"));
+
+        // 2. Kiểm tra mật khẩu cũ
+        if (!passwordEncoder.matches(oldPassword, user.getPassword())) {
+            throw new RuntimeException("Mật khẩu cũ không chính xác.");
+        }
+
+        // 3. Kiểm tra độ dài mật khẩu mới (Nếu cần, dựa trên validation của frontend)
+        if (newPassword == null || newPassword.length() < 6) {
+            throw new RuntimeException("Mật khẩu mới phải có ít nhất 6 ký tự.");
+        }
+
+        // 4. Mã hóa và cập nhật mật khẩu mới
+        user.setPassword(passwordEncoder.encode(newPassword));
+        userRepository.save(user);
+
+        return "Đổi mật khẩu thành công!";
+    }
 }
