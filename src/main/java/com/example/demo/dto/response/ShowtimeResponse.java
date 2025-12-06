@@ -21,6 +21,8 @@ public class ShowtimeResponse {
 
     String name;//tên phòng
 
+    String cinemaName;
+
     LocalDate showDate;
 
     String status;

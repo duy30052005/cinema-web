@@ -21,26 +21,56 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalTime;
 import java.util.Comparator;
-import java.util.HashSet;
 import java.util.List;
 import java.util.stream.Collectors;
 
 @Slf4j
 @Service
 @RequiredArgsConstructor
-@FieldDefaults(level = AccessLevel.PRIVATE,makeFinal = true)
+@FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
 public class ShowtimeService {
     ShowtimeMapper showtimeMapper;
     ShowtimeRepository showtimeRepository;
     MovieRepository movieRepository;
-    private final RoomRepository roomRepository;
+    RoomRepository roomRepository;
+
+    // Helper method để map Showtime sang ShowtimeResponse và điền các thông tin phụ (CinemaName, RoomName, MovieTitle)
+    private ShowtimeResponse mapToResponse(Showtime showtime) {
+        ShowtimeResponse response = showtimeMapper.toShowtimeResponse(showtime);
+
+        // Map tên phim
+        if (showtime.getMovie() != null) {
+            response.setTitle(showtime.getMovie().getTitle());
+        }
+
+        // Map thông tin phòng và rạp
+        if (showtime.getRoom() != null) {
+            response.setName(showtime.getRoom().getName());
+            response.setRoomId(showtime.getRoom().getRoomId());
+
+            // Lấy tên rạp từ phòng
+            if (showtime.getRoom().getCinema() != null) {
+                response.setCinemaName(showtime.getRoom().getCinema().getName());
+            }
+        }
+
+        return response;
+    }
 
     @Transactional
-    public ShowtimeResponse create(ShowtimeCreationRequest request){
+    public ShowtimeResponse create(ShowtimeCreationRequest request) {
         Movie movie = movieRepository.findById(request.getMovieId())
                 .orElseThrow(() -> new AppException(ErrolCode.MOVIE_NOT_FOUND));
         Room room = roomRepository.findById(request.getRoomId())
                 .orElseThrow(() -> new AppException(ErrolCode.ROOM_NOT_FOUND));
+
+        // --- CẬP NHẬT MỚI: Kiểm tra trạng thái phòng ---
+        // Chỉ cho phép tạo suất chiếu nếu phòng đang ACTIVE
+        if (!"ACTIVE".equalsIgnoreCase(room.getStatus())) {
+            // Bạn có thể tạo thêm ErrolCode.ROOM_NOT_ACTIVE để quản lý lỗi tốt hơn
+            throw new RuntimeException("Không thể tạo suất chiếu cho phòng đang bảo trì hoặc ngưng hoạt động");
+        }
+        // ------------------------------------------------
 
         // Tạo Showtime
         Showtime showtime = showtimeMapper.toShowtime(request);
@@ -48,7 +78,7 @@ public class ShowtimeService {
         showtime.setRoom(room);
         showtime.setStatus("ACTIVE");
 
-        // Tính endTime (ví dụ: cộng thêm duration của phim)
+        // Tính endTime
         LocalTime endTime = showtime.getStartTime().plusMinutes(movie.getDuration());
         showtime.setEndTime(endTime);
 
@@ -62,94 +92,52 @@ public class ShowtimeService {
         if (!overlappingShowtimes.isEmpty()) {
             throw new AppException(ErrolCode.SHOWTIME_OVERLAP);
         }
+
         // Lưu Showtime
         showtime = showtimeRepository.save(showtime);
 
-        // Tạo response từ mapper
-        ShowtimeResponse response = showtimeMapper.toShowtimeResponse(showtime);
+        return mapToResponse(showtime);
+    }
 
-        // Xử lý thủ công title và name
-        if (showtime.getMovie() != null) {
-            response.setTitle(showtime.getMovie().getTitle());
-        }
-        if (showtime.getRoom() != null) {
-            response.setName(showtime.getRoom().getName());
-        }
-        response.setRoomId(showtime.getRoom().getRoomId());
-        return response;
-    }
-    @Transactional(readOnly = true) // Chỉ đọc, không cần thay đổi dữ liệu
-    public List<ShowtimeResponse> getAllShowtime(){
-        List<Showtime> showtimes= showtimeRepository.findAll();
+    @Transactional(readOnly = true)
+    public List<ShowtimeResponse> getAllShowtime() {
+        List<Showtime> showtimes = showtimeRepository.findAll();
         return showtimes.stream()
-                .map(showtime -> {
-                    ShowtimeResponse response = showtimeMapper.toShowtimeResponse(showtime);
-                    // Xử lý thủ công title và name
-                    if (showtime.getMovie() != null) {
-                        response.setTitle(showtime.getMovie().getTitle());
-                    }
-                    if (showtime.getRoom() != null) {
-                        response.setName(showtime.getRoom().getName());
-                    }
-                    response.setRoomId(showtime.getRoom().getRoomId());
-                    return response;
-                })
+                .map(this::mapToResponse) // Sử dụng helper method
                 .sorted(Comparator
                         .comparing(ShowtimeResponse::getShowDate)
                         .thenComparing(ShowtimeResponse::getStartTime))
                 .collect(Collectors.toList());
     }
-    public List<ShowtimeResponse> getShowtimeByRoom(Long roomId){
-        List<Showtime> showtimes= showtimeRepository.findByRoomRoomId(roomId);
+
+    public List<ShowtimeResponse> getShowtimeByRoom(Long roomId) {
+        List<Showtime> showtimes = showtimeRepository.findByRoomRoomId(roomId);
         return showtimes.stream()
-                .map(showtime -> {
-                    ShowtimeResponse response = showtimeMapper.toShowtimeResponse(showtime);
-                    // Xử lý thủ công title và name
-                    if (showtime.getMovie() != null) {
-                        response.setTitle(showtime.getMovie().getTitle());
-                    }
-                    if (showtime.getRoom() != null) {
-                        response.setName(showtime.getRoom().getName());
-                    }
-                    response.setRoomId(showtime.getRoom().getRoomId());
-                    return response;
-                })
+                .map(this::mapToResponse)
                 .sorted(Comparator
                         .comparing(ShowtimeResponse::getShowDate)
                         .thenComparing(ShowtimeResponse::getStartTime))
                 .collect(Collectors.toList());
     }
-    public List<ShowtimeResponse> getShowtimebyMovie(Long movieId){
-        List<Showtime> showtimes= showtimeRepository.findByMovieMovieId(movieId);
+
+    public List<ShowtimeResponse> getShowtimebyMovie(Long movieId) {
+        List<Showtime> showtimes = showtimeRepository.findByMovieMovieId(movieId);
         return showtimes.stream()
-                .map(showtime -> {
-                    ShowtimeResponse response = showtimeMapper.toShowtimeResponse(showtime);
-                    // Xử lý thủ công title và name
-                    if (showtime.getMovie() != null) {
-                        response.setTitle(showtime.getMovie().getTitle());
-                    }
-                    if (showtime.getRoom() != null) {
-                        response.setName(showtime.getRoom().getName());
-                    }
-                    response.setRoomId(showtime.getRoom().getRoomId());
-                    return response;
-                })
+                .map(this::mapToResponse)
                 .sorted(Comparator
                         .comparing(ShowtimeResponse::getShowDate)
                         .thenComparing(ShowtimeResponse::getStartTime))
                 .collect(Collectors.toList());
     }
-    public ShowtimeResponse getShowtimeById(Long showtimeId){
+
+    public ShowtimeResponse getShowtimeById(Long showtimeId) {
         Showtime showtime = showtimeRepository.findById(showtimeId)
                 .orElseThrow(() -> new AppException(ErrolCode.SHOWTIME_NOT_FOUND));
 
-        ShowtimeResponse response=showtimeMapper.toShowtimeResponse(showtime);
-        response.setName(showtime.getRoom().getName());
-        response.setTitle(showtime.getMovie().getTitle());
-        response.setRoomId(showtime.getRoom().getRoomId());
-        return response;
+        return mapToResponse(showtime);
     }
-    public ShowtimeResponse updateShowtime(Long showtimeId, ShowtimeUpdateRequest request){
+
+    public ShowtimeResponse updateShowtime(Long showtimeId, ShowtimeUpdateRequest request) {
         Showtime showtime = showtimeRepository.findById(showtimeId)
                 .orElseThrow(() -> new AppException(ErrolCode.SHOWTIME_NOT_FOUND));
 
@@ -157,15 +145,21 @@ public class ShowtimeService {
         Movie movie = movieRepository.findById(request.getMovieId())
                 .orElseThrow(() -> new AppException(ErrolCode.MOVIE_NOT_FOUND));
         showtime.setMovie(movie);
-        // Tính endTime (ví dụ: cộng thêm duration của phim)
+
+        // Tính endTime
         LocalTime endTime = showtime.getStartTime().plusMinutes(movie.getDuration());
         showtime.setEndTime(endTime);
-
 
         // Kiểm tra và cập nhật room nếu roomId thay đổi
         if (request.getRoomId() != null && !request.getRoomId().equals(showtime.getRoom() != null ? showtime.getRoom().getRoomId() : null)) {
             Room room = roomRepository.findById(request.getRoomId())
                     .orElseThrow(() -> new AppException(ErrolCode.ROOM_NOT_FOUND));
+
+            // Cập nhật logic tương tự cho update nếu cần thiết
+            if (!"ACTIVE".equalsIgnoreCase(room.getStatus())) {
+                throw new RuntimeException("Không thể chuyển suất chiếu sang phòng đang bảo trì hoặc ngưng hoạt động");
+            }
+
             showtime.setRoom(room);
         }
 
@@ -175,24 +169,14 @@ public class ShowtimeService {
         // Lưu thay đổi vào database
         showtimeRepository.save(showtime);
 
-        // Lấy lại showtime từ database để đảm bảo dữ liệu mới
+        // Lấy lại showtime từ database để đảm bảo dữ liệu mới (đặc biệt là các quan hệ)
         Showtime updatedShowtime = showtimeRepository.findById(showtimeId)
                 .orElseThrow(() -> new AppException(ErrolCode.SHOWTIME_NOT_FOUND));
 
-        // Tạo response từ showtime đã được làm mới
-        ShowtimeResponse response = showtimeMapper.toShowtimeResponse(updatedShowtime);
-
-        // Gán title và name từ showtime đã làm mới
-        if (updatedShowtime.getMovie() != null) {
-            response.setTitle(updatedShowtime.getMovie().getTitle());
-        }
-        if (updatedShowtime.getRoom() != null) {
-            response.setName(updatedShowtime.getRoom().getName());
-        }
-        response.setRoomId(updatedShowtime.getRoom().getRoomId());
-        return response;
+        return mapToResponse(updatedShowtime);
     }
-    public void deleteShowtime(Long showtimeId){
+
+    public void deleteShowtime(Long showtimeId) {
         showtimeRepository.deleteById(showtimeId);
     }
 }
