@@ -138,6 +138,8 @@ public class ShowtimeService {
     }
 
     public ShowtimeResponse updateShowtime(Long showtimeId, ShowtimeUpdateRequest request) {
+        log.info("chạy service Showtime");
+
         Showtime showtime = showtimeRepository.findById(showtimeId)
                 .orElseThrow(() -> new AppException(ErrolCode.SHOWTIME_NOT_FOUND));
 

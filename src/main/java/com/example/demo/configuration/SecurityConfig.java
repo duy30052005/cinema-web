@@ -41,7 +41,7 @@ public class SecurityConfig {
             "/movies",// Cho phép xem chi tiết phim
             "/cinemas",
             "/rooms",
-            "showtimes"// Cho phép xem chi tiết rạp
+            "/showtimes"// Cho phép xem chi tiết rạp
     };
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity httpSecurity)

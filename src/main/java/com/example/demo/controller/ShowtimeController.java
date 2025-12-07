@@ -47,12 +47,14 @@ public class ShowtimeController {
     }
     @GetMapping("/{showtimeId}")
     ApiResponse<ShowtimeResponse> getShowtimeByShowtimeId(@PathVariable("showtimeId") Long showtimeId){
+        log.info("");
         return ApiResponse.<ShowtimeResponse>builder()
                 .result(showtimeService.getShowtimeById(showtimeId))
                 .build();
     }
     @PutMapping("/{showtimeId}")
     ApiResponse<ShowtimeResponse> updateShowtime(@PathVariable("showtimeId") Long showtimeId, @RequestBody ShowtimeUpdateRequest request){
+        log.info("chạy controller Showtime");
         return ApiResponse.<ShowtimeResponse>builder()
                 .result(showtimeService.updateShowtime(showtimeId,request))
                 .build();
