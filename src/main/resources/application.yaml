@@ -18,9 +18,9 @@ spring:
           starttls:
             enable: true
   datasource:
-    url: jdbc:postgresql://dpg-d4cum3c9c44c7392ehig-a.virginia-postgres.render.com:5432/cinemadb_lhyn
-    username: cinemadb_lhyn_user
-    password: HjvKyrGgZqhF7lsrGIB8J7ABaE0GmVLY
+    url: jdbc:postgresql://db.huvrdhldratbpaliqgpq.supabase.co:5432/postgres
+    username: postgres
+    password: Duy@12345
     driver-class-name: org.postgresql.Driver
 #  datasource:
 #    url: ${SPRING_DATASOURCE_URL}
@@ -28,7 +28,7 @@ spring:
 #    password: ${SPRING_DATASOURCE_PASSWORD}
   jpa:
     hibernate:
-      ddl-auto: none
+      ddl-auto: update
     properties:
       hibernate:
         dialect: org.hibernate.dialect.PostgreSQLDialect
