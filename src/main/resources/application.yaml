@@ -18,7 +18,7 @@ spring:
           starttls:
             enable: true
   datasource:
-    url: jdbc:postgresql://db.huvrdhldratbpaliqgpq.supabase.co:5432/postgres
+    url: jdbc:postgresql://db.huvrdhldratbpaliqgpq.supabase.co:5432/postgres?sslmode=require
     username: postgres
     password: Duy@12345
     driver-class-name: org.postgresql.Driver
