@@ -1,0 +1,7 @@
+spring:
+  datasource:
+    # Đây là cấu hình cho máy Local của bạn
+    url: jdbc:postgresql://db.huvrdhldratbpaliqgpq.supabase.co:5432/postgres?sslmode=require
+    username: postgres
+    password: "Duy@12345" # Mật khẩu thật để trong ngoặc kép
+    driver-class-name: org.postgresql.Driver

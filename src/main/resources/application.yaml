@@ -17,15 +17,16 @@ spring:
           auth: true
           starttls:
             enable: true
-  datasource:
-    url: jdbc:postgresql://db.huvrdhldratbpaliqgpq.supabase.co:5432/postgres?sslmode=require
-    username: postgres
-    password: Duy@12345
-    driver-class-name: org.postgresql.Driver
 #  datasource:
-#    url: ${SPRING_DATASOURCE_URL}
-#    username: ${SPRING_DATASOURCE_USERNAME}
-#    password: ${SPRING_DATASOURCE_PASSWORD}
+#    url: jdbc:postgresql://db.huvrdhldratbpaliqgpq.supabase.co:5432/postgres?sslmode=require
+#    username: postgres
+#    password: Duy@12345
+#    driver-class-name: org.postgresql.Driver
+  datasource:
+    url: ${SPRING_DATASOURCE_URL}
+    username: ${SPRING_DATASOURCE_USERNAME}
+    password: ${SPRING_DATASOURCE_PASSWORD}
+    driver-class-name: org.postgresql.Driver
   jpa:
     hibernate:
       ddl-auto: update
