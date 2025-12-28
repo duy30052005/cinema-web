@@ -28,11 +28,7 @@ public class User {
 
     String role;
 
-    @OneToMany(mappedBy = "sender")
-    private Set<Message> sentMessages;
 
-    @OneToMany(mappedBy = "recipient")
-    private Set<Message> receivedMessages;
 
 
 }
