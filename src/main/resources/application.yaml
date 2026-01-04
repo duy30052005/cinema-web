@@ -7,21 +7,19 @@ server:
     include-binding-errors: always  # Hiển thị lỗi validate (VD: @Valid)
 spring:
   mail:
-    host: smtp.gmail.com
-    port: 587
-    username: mimiduy2810@gmail.com
-    password: fdjjfrvwgqoywuxf
+    # Cấu hình Mailtrap lấy từ ảnh của bạn
+    host: sandbox.smtp.mailtrap.io   #
+    port: 2525                       # (Khuyên dùng port này để tránh bị Render chặn)
+    username: 21b43b76f6f7b5         #
+    password: "0d31051dccfed4" # Lưu ý: Copy password thật từ trang web (chỗ ****fed4)
     properties:
       mail:
         smtp:
           auth: true
           starttls:
             enable: true
-#  datasource:
-#    url: jdbc:postgresql://db.huvrdhldratbpaliqgpq.supabase.co:5432/postgres?sslmode=require
-#    username: postgres
-#    password: Duy@12345
-#    driver-class-name: org.postgresql.Driver
+            required: true
+
   datasource:
     url: ${SPRING_DATASOURCE_URL}
     username: ${SPRING_DATASOURCE_USERNAME}
