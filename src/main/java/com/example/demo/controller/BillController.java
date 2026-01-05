@@ -50,4 +50,11 @@ public class BillController {
                 .result(billService.getBillById(billId))
                 .build();
     }
+    @GetMapping("/user/{userId}")
+    ApiResponse<List<BillResponse>> getBillsByUserId(@PathVariable("userId") Long userId) {
+        log.info("Get bills by user id: {}", userId);
+        return ApiResponse.<List<BillResponse>>builder()
+                .result(billService.getAllBillByUserId(userId))
+                .build();
+    }
 }

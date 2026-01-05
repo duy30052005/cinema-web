@@ -309,5 +309,64 @@ public class BillService {
             }
         }
     }
+    @Transactional(readOnly = true)
+    public List<BillResponse> getAllBillByUserId(Long userId) {
+        log.info("Fetching bills for userId: {}", userId);
+
+        // 1. Gọi Repository để lấy list Bill của User
+        List<Bill> bills = billRepository.findByUser_UserId(userId);
+
+        // 2. Map dữ liệu sang Response (Bao gồm cả Ticket và Combo)
+        return bills.stream()
+                .map(bill -> {
+                    BillResponse billResponse = billMapper.toBillResponse(bill);
+
+                    if (bill.getUser() != null) {
+                        billResponse.setUserId(bill.getUser().getUserId());
+                    }
+                    billResponse.setTotalAmount(bill.getTotalAmount());
+
+                    // --- Lấy danh sách tickets cho từng bill ---
+                    List<Ticket> tickets = ticketRepository.findByBillBillId(bill.getBillId());
+                    if (tickets != null) {
+                        List<TicketResponse> ticketResponses = tickets.stream()
+                                .map(ticket -> {
+                                    TicketResponse response = new TicketResponse();
+                                    response.setTicketId(ticket.getTicketId());
+                                    // Map các trường ticket khác...
+                                    response.setUserId(ticket.getUser() != null ? ticket.getUser().getUserId() : null);
+                                    response.setSeatId(ticket.getSeat() != null ? ticket.getSeat().getSeatId() : null);
+                                    response.setShowtimeId(ticket.getShowtime() != null ? ticket.getShowtime().getShowtimeId() : null);
+                                    response.setBookingDate(ticket.getBookingDate());
+                                    response.setTicketName(ticket.getTicketName());
+                                    response.setPrice(ticket.getPrice());
+                                    response.setBillId(ticket.getBill() != null ? ticket.getBill().getBillId() : null);
+                                    return response;
+                                })
+                                .collect(Collectors.toList());
+                        billResponse.setTicketIds(ticketResponses);
+                    }
+
+                    // --- Lấy danh sách billCombos cho từng bill ---
+                    List<BillCombo> billCombos = billComboRepository.findByBillBillId(bill.getBillId());
+                    if (billCombos != null) {
+                        List<BillComboResponse> billComboResponses = billCombos.stream()
+                                .map(billCombo -> {
+                                    BillComboResponse response = new BillComboResponse();
+                                    response.setBillComboId(billCombo.getBillComboId());
+                                    response.setBillId(billCombo.getBill() != null ? billCombo.getBill().getBillId() : null);
+                                    response.setComboId(billCombo.getCombo() != null ? billCombo.getCombo().getComboId() : null);
+                                    response.setQuantity(billCombo.getQuantity());
+                                    response.setTotalPrice(billCombo.getTotalPrice());
+                                    return response;
+                                })
+                                .collect(Collectors.toList());
+                        billResponse.setBillComboIds(billComboResponses);
+                    }
+
+                    return billResponse;
+                })
+                .collect(Collectors.toList());
+    }
 
 }
