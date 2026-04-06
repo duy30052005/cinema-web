@@ -1,7 +1,7 @@
 # 🎬 Cinema Booking System - Backend API
 
 ## 📝 Giới thiệu
-Dự án cung cấp hệ thống Backend RESTful API mạnh mẽ cho nền tảng đặt vé xem phim trực tuyến. Hệ thống được thiết kế theo kiến trúc phân tầng chuẩn (Controller - Service - Repository), đảm bảo hiệu năng cao, bảo mật chặt chẽ và hỗ trợ tương tác thời gian thực cho người dùng.
+Dự án cung cấp hệ thống Backend RESTful API mạnh mẽ cho nền tảng đặt vé xem phim trực tuyến. Hệ thống được thiết kế theo kiến trúc phân tầng chuẩn (Controller - Service - Repository), đảm bảo hiệu năng cao, bảo mật chặt chẽ, hỗ trợ tương tác thời gian thực và được đóng gói Docker để vận hành linh hoạt trên môi trường Cloud.
 
 ## 🚀 Công nghệ sử dụng
 * **Ngôn ngữ:** Java 21
@@ -11,6 +11,7 @@ Dự án cung cấp hệ thống Backend RESTful API mạnh mẽ cho nền tản
 * **Real-time:** Spring WebSocket
 * **Mapping & Tiện ích:** MapStruct, Lombok
 * **Email Service:** Spring Boot Mail, Resend API
+* **DevOps & Cloud:** Docker (Multi-stage build), Render PaaS
 * **Monitoring & Logging:** Spring Boot Actuator, Zalando Logbook
 
 ## 💡 Các tính năng cốt lõi (Key Features)
@@ -37,8 +38,12 @@ Dự án cung cấp hệ thống Backend RESTful API mạnh mẽ cho nền tản
 * Sử dụng **Spring Boot Actuator** để theo dõi "sức khỏe" (health checks) của ứng dụng.
 * Sử dụng **Zalando Logbook** để ghi log chi tiết các HTTP request/response, hỗ trợ đắc lực cho quá trình gỡ lỗi (debugging).
 
+### 6. Triển khai Cloud (Docker & Render)
+* Giải quyết hạn chế môi trường Java native trên nền tảng Cloud (Render) bằng cách đóng gói ứng dụng với **Docker**.
+* Sử dụng chiến lược **Multi-stage build**: Tách biệt môi trường `maven:alpine` (để build mã nguồn) và môi trường `eclipse-temurin:21-jdk` (để chạy ứng dụng), giúp tối ưu hóa dung lượng image và bảo mật mã nguồn.
+
 ## 📖 Tài liệu API (API Documentation)
-Hệ thống cung cấp tài liệu API chi tiết theo chuẩn **OpenAPI 3.1**, toàn bộ đặc tả được định nghĩa tại file `demo-openapi.yaml` ở thư mục gốc của dự án.
+Hệ thống cung cấp tài liệu API chi tiết theo chuẩn **OpenAPI 3.1**, toàn bộ đặc tả được định nghĩa tại file `open-api.yaml` ở thư mục gốc của dự án.
 
 Để xem chi tiết các Endpoints (GET, POST, PUT, DELETE) và cấu trúc dữ liệu (Schemas), bạn có thể sử dụng một trong hai cách sau:
 
@@ -62,6 +67,9 @@ src/main/java/com/example/demo
 ├── repository/     # Tương tác với Database (Spring Data JPA)
 ├── service/        # Chứa logic nghiệp vụ lõi
 └── DemoApplication.java
+
+Dockerfile          # Script build Docker image (Multi-stage)
+open-api.yaml       # Đặc tả tài liệu hệ thống API
 ```
 
 ## 🛠 Hướng dẫn Triển khai (Local Setup)
@@ -70,6 +78,7 @@ src/main/java/com/example/demo
 * JDK 21
 * Maven 3.x
 * PostgreSQL 14+
+* Docker (Tùy chọn, nếu muốn chạy qua container)
 * IDE hỗ trợ Lombok (IntelliJ IDEA, Eclipse, Azure Data Studio để query DB).
 
 ### Bước 2: Cấu hình Cơ sở dữ liệu & Biến môi trường
@@ -85,11 +94,18 @@ resend.api.key=your_resend_api_key
 ```
 
 ### Bước 3: Khởi chạy dự án
-Sử dụng Maven để tải các thư viện và chạy ứng dụng:
+**Cách 1: Chạy thuần bằng Maven**
 ```bash
 mvn clean install
 mvn spring-boot:run
 ```
+
+**Cách 2: Chạy bằng Docker (Giả lập môi trường Render)**
+```bash
+docker build -t cinema-backend .
+docker run -p 8080:8080 cinema-backend
+```
+
 Server sẽ khởi chạy mặc định tại: `http://localhost:8080`
 
 ## 👥 Tác giả
