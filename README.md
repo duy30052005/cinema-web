@@ -1,61 +1,81 @@
-# cinema-web
+# 🎬 Cinema Booking System - Backend API
 
-## 1. Đăng kí
+## 📝 Giới thiệu
+Dự án cung cấp hệ thống Backend RESTful API mạnh mẽ cho nền tảng đặt vé xem phim trực tuyến. Hệ thống được thiết kế theo kiến trúc phân tầng chuẩn (Controller - Service - Repository), đảm bảo hiệu năng cao, bảo mật chặt chẽ và hỗ trợ tương tác thời gian thực cho người dùng.
 
-**curl -X POST --location "http://localhost/cinema/users"** \
-**Header** "Content-Type: application/json" \
--**request** 
-{\
-"username" : " ",\
-"password" : " ",\
-"email" : " "\
-}'\
--**response** {\
-&emsp;"code": ,\
-&emsp;"result": {\
-&emsp;&emsp;&emsp;"userId": ,\
-&emsp;&emsp;&emsp;"username": " ",\
-&emsp;&emsp;&emsp;"password": " ",\
-&emsp;&emsp;&emsp;"email": " ",\
-&emsp;&emsp;&emsp;"role": " ",\
-&emsp;&emsp;&emsp;"sentMessages": ,\
-&emsp;&emsp;&emsp;"receivedMessages": \
-&emsp;}\
-}
-## 2. Đăng nhập
+## 🚀 Công nghệ sử dụng
+* **Ngôn ngữ:** Java 21
+* **Framework chính:** Spring Boot 3.4.5
+* **Cơ sở dữ liệu:** PostgreSQL & Spring Data JPA
+* **Bảo mật:** Spring Security, OAuth2 Resource Server (JWT)
+* **Real-time:** Spring WebSocket
+* **Mapping & Tiện ích:** MapStruct, Lombok
+* **Email Service:** Spring Boot Mail, Resend API
+* **Monitoring & Logging:** Spring Boot Actuator, Zalando Logbook
 
-**curl -X POST --location "http://localhost/cinema/auth/token"** \
-**Header** "Content-Type: application/json" \
--**request**
-{\
-&emsp;"username" : " ",\
-&emsp;"password" : " ",\
+## 💡 Các tính năng cốt lõi (Key Features)
 
-}'\
--**response** {\
-&emsp;"code": ,\
-&emsp;&emsp;"result": {\
-&emsp;&emsp;&emsp;"token": " " ,\
-&emsp;&emsp;&emsp;"authenticated": " "\
-&emsp;&emsp;}\
-&emsp;}
-## 3. Gửi mã về Gmail
+### 1. Kiến trúc Hệ thống & Quản lý Dữ liệu
+* Triển khai kiến trúc **N-Tier (Controller - Service - Repository - Entity)** giúp tách biệt logic nghiệp vụ và tối ưu hóa việc bảo trì.
+* Tương tác CSDL PostgreSQL thông qua **Spring Data JPA** / Hibernate, sử dụng Entity để map với các bảng dữ liệu thực tế.
+* Tự động hóa quá trình chuyển đổi giữa DTO (Data Transfer Object) và Entity bằng **MapStruct**, giúp ẩn giấu cấu trúc database thật và tăng tính bảo mật cho API.
 
-**curl -X POST --location "http://localhost/cinema/users"** \
-**Header** "Content-Type: application/json" \
--**request**
-{\
-&emsp;"gmail" : " "\
-}'\
--**response** {\
-&emsp;"code": ,\
-&emsp;&emsp;"result": {\
-&emsp;&emsp;&emsp;"userId": ,\
-&emsp;&emsp;&emsp;"username": "",\
-&emsp;&emsp;&emsp;"password": "",\
-&emsp;&emsp;&emsp;"email": "",\
-&emsp;&emsp;&emsp;"role": "",\
-&emsp;&emsp;&emsp;"sentMessages": ,\
-&emsp;&emsp;&emsp;"receivedMessages": \
-&emsp;}\
-}
+### 2. Xác thực & Phân quyền (Authentication & Authorization)
+* Triển khai hệ thống bảo mật bằng **Spring Security** kết hợp **OAuth2** (JWT - JSON Web Token).
+* Phân quyền truy cập rõ ràng giữa các Role: `ADMIN` (quản lý rạp, lịch chiếu, phim) và `USER` (đặt vé, xem lịch sử).
+* Mã hóa mật khẩu an toàn.
+
+### 3. Tương tác Thời gian thực (Real-time Features)
+* Tích hợp **Spring WebSocket** cho phép truyền tải dữ liệu hai chiều liên tục giữa client và server.
+* Ứng dụng xây dựng phân hệ nhắn tin (Chat) trực tuyến và có thể mở rộng cho tính năng cập nhật sơ đồ ghế ngồi (Seat Booking) theo thời gian thực để tránh kẹt vé.
+
+### 4. Dịch vụ Thông báo (Notification Service)
+* Tích hợp **Resend API** và **JavaMailSender** để xử lý hàng đợi gửi email.
+* Tự động gửi email xác nhận đặt vé, gửi mã OTP hoặc thông báo đăng ký tài khoản thành công cho khách hàng.
+
+### 5. Quản lý & Theo dõi (Monitoring)
+* Sử dụng **Spring Boot Actuator** để theo dõi "sức khỏe" (health checks) của ứng dụng.
+* Sử dụng **Zalando Logbook** để ghi log chi tiết các HTTP request/response, hỗ trợ đắc lực cho quá trình gỡ lỗi (debugging).
+
+## 📂 Cấu trúc mã nguồn cơ bản
+```text
+src/main/java/com/example/demo
+├── config/         # Cấu hình Security, WebSocket, CORS
+├── controller/     # Tiếp nhận các HTTP Request (REST API)
+├── dto/            # Data Transfer Objects & MapStruct Mappers
+├── entity/         # Các lớp mô hình hóa cơ sở dữ liệu (PostgreSQL)
+├── repository/     # Tương tác với Database (Spring Data JPA)
+├── service/        # Chứa logic nghiệp vụ lõi
+└── DemoApplication.java
+```
+
+## 🛠 Hướng dẫn Triển khai (Local Setup)
+
+### Bước 1: Yêu cầu hệ thống
+* JDK 21
+* Maven 3.x
+* PostgreSQL 14+
+* IDE hỗ trợ Lombok (IntelliJ IDEA, Eclipse, Azure Data Studio để query DB).
+
+### Bước 2: Cấu hình Cơ sở dữ liệu & Biến môi trường
+Tạo database trên PostgreSQL và cập nhật thông tin vào file `src/main/resources/application.properties` (hoặc `.yml`):
+```properties
+spring.datasource.url=jdbc:postgresql://localhost:5432/ten_database
+spring.datasource.username=postgres
+spring.datasource.password=mat_khau_cua_ban
+spring.jpa.hibernate.ddl-auto=update
+
+# Cấu hình Resend / Mail (Nếu có)
+resend.api.key=your_resend_api_key
+```
+
+### Bước 3: Khởi chạy dự án
+Sử dụng Maven để tải các thư viện và chạy ứng dụng:
+```bash
+mvn clean install
+mvn spring-boot:run
+```
+Server sẽ khởi chạy mặc định tại: `http://localhost:8080`
+
+## 👥 Tác giả
+* **Huỳnh Bá Duy** - Backend Developer (Java/Spring Boot)
