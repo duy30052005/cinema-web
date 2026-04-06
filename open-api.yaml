@@ -1,0 +1,1359 @@
+openapi: "3.1.0"
+info:
+  title: "demo API"
+  description: "demo API"
+  version: "1.0.0"
+servers:
+  - url: "https://demo"
+paths:
+  /cinema/users/{user_id}:
+    put:
+      summary: "PUT cinema/users/{user_id}"
+      operationId: "updateUser"
+      parameters:
+        - name: "user_id"
+          in: "path"
+          required: true
+          schema:
+            type: "integer"
+            format: "int64"
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/UserUpdateRequest"
+        required: true
+      responses:
+        "200":
+          description: "OK"
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/UserResponse"
+    delete:
+      summary: "DELETE cinema/users/{user_id}"
+      operationId: "deleteUser"
+      parameters:
+        - name: "user_id"
+          in: "path"
+          required: true
+          schema:
+            type: "integer"
+            format: "int64"
+      responses:
+        "200":
+          description: "OK"
+          content:
+            '*/*':
+              schema:
+                type: "string"
+    get:
+      summary: "GET cinema/users/{user_id}"
+      operationId: "getUserById"
+      parameters:
+        - name: "user_id"
+          in: "path"
+          required: true
+          schema:
+            type: "integer"
+            format: "int64"
+      responses:
+        "200":
+          description: "OK"
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/UserResponse"
+  /cinema/users:
+    post:
+      summary: "POST cinema/users"
+      operationId: "createUser"
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/UserCreationRequest"
+        required: true
+      responses:
+        "200":
+          description: "OK"
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/User"
+    get:
+      summary: "GET cinema/users"
+      operationId: "getAllUsers"
+      responses:
+        "200":
+          description: "OK"
+          content:
+            '*/*':
+              schema:
+                type: "array"
+                items:
+                  $ref: "#/components/schemas/User"
+  /cinema/users/myInfo:
+    get:
+      summary: "GET cinema/users/myInfo"
+      operationId: "getMyInfo"
+      responses:
+        "200":
+          description: "OK"
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/UserResponse"
+  /cinema/auth/change-password:
+    put:
+      summary: "PUT cinema/auth/change-password"
+      operationId: "changePassword"
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/ChangePasswordRequest"
+        required: true
+      responses:
+        "200":
+          description: "OK"
+          content:
+            '*/*':
+              schema:
+                type: "string"
+  /cinema/auth/token:
+    post:
+      summary: "POST cinema/auth/token"
+      operationId: "authenticate"
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/AuthenticationRequest"
+        required: true
+      responses:
+        "200":
+          description: "OK"
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/AuthenticationResponse"
+  /cinema/auth/introspect:
+    post:
+      summary: "POST cinema/auth/introspect"
+      operationId: "checkAuthentication"
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/IntrospectRequest"
+        required: true
+      responses:
+        "200":
+          description: "OK"
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/IntrospectResponse"
+  /cinema/auth/forgotpassword:
+    post:
+      summary: "POST cinema/auth/forgotpassword"
+      operationId: "forgotPassword"
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/ForgotPasswordRequest"
+        required: true
+      responses:
+        "200":
+          description: "OK"
+          content:
+            '*/*':
+              schema:
+                type: "string"
+  /cinema/auth/updatepassword:
+    post:
+      summary: "POST cinema/auth/updatepassword"
+      operationId: "resetPassword"
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/ResetPasswordRequest"
+        required: true
+      responses:
+        "200":
+          description: "OK"
+          content:
+            '*/*':
+              schema:
+                type: "string"
+  /cinema/movies/{movie_id}:
+    put:
+      summary: "PUT cinema/movies/{movie_id}"
+      operationId: "updateMovie"
+      parameters:
+        - name: "movie_id"
+          in: "path"
+          required: true
+          schema:
+            type: "integer"
+            format: "int64"
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/MovieUpdateRequest"
+        required: true
+      responses:
+        "200":
+          description: "OK"
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/MovieResponse"
+    delete:
+      summary: "DELETE cinema/movies/{movie_id}"
+      operationId: "deleteMovie"
+      parameters:
+        - name: "movie_id"
+          in: "path"
+          required: true
+          schema:
+            type: "integer"
+            format: "int64"
+      responses:
+        "200":
+          description: "OK"
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/Void"
+    get:
+      summary: "GET cinema/movies/{movie_id}"
+      operationId: "getMovieByTitle"
+      parameters:
+        - name: "movie_id"
+          in: "path"
+          required: true
+          schema:
+            type: "integer"
+            format: "int64"
+      responses:
+        "200":
+          description: "OK"
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/MovieResponse"
+  /cinema/movies:
+    post:
+      summary: "POST cinema/movies"
+      operationId: "createMovie"
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/MovieCreationRequest"
+        required: true
+      responses:
+        "200":
+          description: "OK"
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/MovieResponse"
+    get:
+      summary: "GET cinema/movies"
+      operationId: "getAllMovies"
+      responses:
+        "200":
+          description: "OK"
+          content:
+            '*/*':
+              schema:
+                type: "array"
+                items:
+                  $ref: "#/components/schemas/MovieResponse"
+  /cinema/rooms/{room_id}:
+    put:
+      summary: "PUT cinema/rooms/{room_id}"
+      operationId: "updateRoom"
+      parameters:
+        - name: "room_id"
+          in: "path"
+          required: true
+          schema:
+            type: "integer"
+            format: "int64"
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/RoomUpdateRequest"
+        required: true
+      responses:
+        "200":
+          description: "OK"
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/RoomResponse"
+    delete:
+      summary: "DELETE cinema/rooms/{room_id}"
+      operationId: "deleteRoom"
+      parameters:
+        - name: "room_id"
+          in: "path"
+          required: true
+          schema:
+            type: "integer"
+            format: "int64"
+      responses:
+        "200":
+          description: "OK"
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/Void"
+    get:
+      summary: "GET cinema/rooms/{room_id}"
+      operationId: "getRoomById"
+      parameters:
+        - name: "room_id"
+          in: "path"
+          required: true
+          schema:
+            type: "integer"
+            format: "int64"
+      responses:
+        "200":
+          description: "OK"
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/RoomResponse"
+  /cinema/rooms:
+    post:
+      summary: "POST cinema/rooms"
+      operationId: "createRoom"
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/RoomCreationRequest"
+        required: true
+      responses:
+        "200":
+          description: "OK"
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/RoomResponse"
+    get:
+      summary: "GET cinema/rooms"
+      operationId: "getAllRooms"
+      responses:
+        "200":
+          description: "OK"
+          content:
+            '*/*':
+              schema:
+                type: "array"
+                items:
+                  $ref: "#/components/schemas/RoomResponse"
+  /cinema/showtimes/{showtimeId}:
+    put:
+      summary: "PUT cinema/showtimes/{showtimeId}"
+      operationId: "updateShowtime"
+      parameters:
+        - name: "showtimeId"
+          in: "path"
+          required: true
+          schema:
+            type: "integer"
+            format: "int64"
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/ShowtimeUpdateRequest"
+        required: true
+      responses:
+        "200":
+          description: "OK"
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/ShowtimeResponse"
+    delete:
+      summary: "DELETE cinema/showtimes/{showtimeId}"
+      operationId: "deleteShowtime"
+      parameters:
+        - name: "showtimeId"
+          in: "path"
+          required: true
+          schema:
+            type: "integer"
+            format: "int64"
+      responses:
+        "200":
+          description: "OK"
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/Void"
+    get:
+      summary: "GET cinema/showtimes/{showtimeId}"
+      operationId: "getShowtimeByShowtimeId"
+      parameters:
+        - name: "showtimeId"
+          in: "path"
+          required: true
+          schema:
+            type: "integer"
+            format: "int64"
+      responses:
+        "200":
+          description: "OK"
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/ShowtimeResponse"
+  /cinema/showtimes:
+    post:
+      summary: "POST cinema/showtimes"
+      operationId: "create"
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/ShowtimeCreationRequest"
+        required: true
+      responses:
+        "200":
+          description: "OK"
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/ShowtimeResponse"
+    get:
+      summary: "GET cinema/showtimes"
+      operationId: "getAllShowtimes"
+      responses:
+        "200":
+          description: "OK"
+          content:
+            '*/*':
+              schema:
+                type: "array"
+                items:
+                  $ref: "#/components/schemas/ShowtimeResponse"
+  /cinema/showtimes/room/{roomId}:
+    get:
+      summary: "GET cinema/showtimes/room/{roomId}"
+      operationId: "getShowtimesByRoomId"
+      parameters:
+        - name: "roomId"
+          in: "path"
+          required: true
+          schema:
+            type: "integer"
+            format: "int64"
+      responses:
+        "200":
+          description: "OK"
+          content:
+            '*/*':
+              schema:
+                type: "array"
+                items:
+                  $ref: "#/components/schemas/ShowtimeResponse"
+  /cinema/showtimes/movie/{movieId}:
+    get:
+      summary: "GET cinema/showtimes/movie/{movieId}"
+      operationId: "getShowtimesByMovieId"
+      parameters:
+        - name: "movieId"
+          in: "path"
+          required: true
+          schema:
+            type: "integer"
+            format: "int64"
+      responses:
+        "200":
+          description: "OK"
+          content:
+            '*/*':
+              schema:
+                type: "array"
+                items:
+                  $ref: "#/components/schemas/ShowtimeResponse"
+  /cinema/seats/room/{room_id}:
+    get:
+      summary: "GET cinema/seats/room/{room_id}"
+      operationId: "getSeatByRoomId"
+      parameters:
+        - name: "room_id"
+          in: "path"
+          required: true
+          schema:
+            type: "integer"
+            format: "int64"
+      responses:
+        "200":
+          description: "OK"
+          content:
+            '*/*':
+              schema:
+                type: "array"
+                items:
+                  $ref: "#/components/schemas/SeatResponse"
+  /cinema/seats/{seatId}:
+    get:
+      summary: "GET cinema/seats/{seatId}"
+      operationId: "getSeatById"
+      parameters:
+        - name: "seatId"
+          in: "path"
+          required: true
+          schema:
+            type: "integer"
+            format: "int64"
+      responses:
+        "200":
+          description: "OK"
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/SeatResponse"
+  /cinema/tickets:
+    post:
+      summary: "POST cinema/tickets"
+      operationId: "createTicket"
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/TicketCreationRequest"
+        required: true
+      responses:
+        "200":
+          description: "OK"
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/TicketResponse"
+  /cinema/tickets/showtime/{showtimeId}:
+    get:
+      summary: "GET cinema/tickets/showtime/{showtimeId}"
+      operationId: "getTicketbyShowtime"
+      parameters:
+        - name: "showtimeId"
+          in: "path"
+          required: true
+          schema:
+            type: "integer"
+            format: "int64"
+      responses:
+        "200":
+          description: "OK"
+          content:
+            '*/*':
+              schema:
+                type: "array"
+                items:
+                  $ref: "#/components/schemas/TicketResponse"
+  /cinema/tickets/bill/{billId}:
+    get:
+      summary: "GET cinema/tickets/bill/{billId}"
+      operationId: "getTicketbyBill"
+      parameters:
+        - name: "billId"
+          in: "path"
+          required: true
+          schema:
+            type: "integer"
+            format: "int64"
+      responses:
+        "200":
+          description: "OK"
+          content:
+            '*/*':
+              schema:
+                type: "array"
+                items:
+                  $ref: "#/components/schemas/TicketResponse"
+  /cinema/combos/{comboId}:
+    put:
+      summary: "PUT cinema/combos/{comboId}"
+      operationId: "updateCombo"
+      parameters:
+        - name: "comboId"
+          in: "path"
+          required: true
+          schema:
+            type: "integer"
+            format: "int64"
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/ComboUpdateRequest"
+        required: true
+      responses:
+        "200":
+          description: "OK"
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/ComboResponse"
+    delete:
+      summary: "DELETE cinema/combos/{comboId}"
+      operationId: "deleteCombo"
+      parameters:
+        - name: "comboId"
+          in: "path"
+          required: true
+          schema:
+            type: "integer"
+            format: "int64"
+      responses:
+        "200":
+          description: "OK"
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/Void"
+    get:
+      summary: "GET cinema/combos/{comboId}"
+      operationId: "getCombo"
+      parameters:
+        - name: "comboId"
+          in: "path"
+          required: true
+          schema:
+            type: "integer"
+            format: "int64"
+      responses:
+        "200":
+          description: "OK"
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/ComboResponse"
+  /cinema/combos:
+    post:
+      summary: "POST cinema/combos"
+      operationId: "createCombo"
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/ComboCreationRequest"
+        required: true
+      responses:
+        "200":
+          description: "OK"
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/ComboResponse"
+    get:
+      summary: "GET cinema/combos"
+      operationId: "getAllCombos"
+      responses:
+        "200":
+          description: "OK"
+          content:
+            '*/*':
+              schema:
+                type: "array"
+                items:
+                  $ref: "#/components/schemas/ComboResponse"
+  /cinema/bills/{billId}:
+    put:
+      summary: "PUT cinema/bills/{billId}"
+      operationId: "updateBill"
+      parameters:
+        - name: "billId"
+          in: "path"
+          required: true
+          schema:
+            type: "integer"
+            format: "int64"
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/BillUpdateRequest"
+        required: true
+      responses:
+        "200":
+          description: "OK"
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/BillResponse"
+    get:
+      summary: "GET cinema/bills/{billId}"
+      operationId: "getBillById"
+      parameters:
+        - name: "billId"
+          in: "path"
+          required: true
+          schema:
+            type: "integer"
+            format: "int64"
+      responses:
+        "200":
+          description: "OK"
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/BillResponse"
+  /cinema/bills:
+    post:
+      summary: "POST cinema/bills"
+      operationId: "createBill"
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/BillCreationRequest"
+        required: true
+      responses:
+        "200":
+          description: "OK"
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/BillResponse"
+    get:
+      summary: "GET cinema/bills"
+      operationId: "getAllBills"
+      responses:
+        "200":
+          description: "OK"
+          content:
+            '*/*':
+              schema:
+                type: "array"
+                items:
+                  $ref: "#/components/schemas/BillResponse"
+  /cinema/bills/user/{userId}:
+    get:
+      summary: "GET cinema/bills/user/{userId}"
+      operationId: "getBillsByUserId"
+      parameters:
+        - name: "userId"
+          in: "path"
+          required: true
+          schema:
+            type: "integer"
+            format: "int64"
+      responses:
+        "200":
+          description: "OK"
+          content:
+            '*/*':
+              schema:
+                type: "array"
+                items:
+                  $ref: "#/components/schemas/BillResponse"
+  /cinema/bill-combos:
+    post:
+      summary: "POST cinema/bill-combos"
+      operationId: "createBillCombo"
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/BillComboCreationRequest"
+        required: true
+      responses:
+        "200":
+          description: "OK"
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/BillComboResponse"
+  /cinema/bill-combos/bill/{billId}:
+    get:
+      summary: "GET cinema/bill-combos/bill/{billId}"
+      operationId: "getBillComboByBill"
+      parameters:
+        - name: "billId"
+          in: "path"
+          required: true
+          schema:
+            type: "integer"
+            format: "int64"
+      responses:
+        "200":
+          description: "OK"
+          content:
+            '*/*':
+              schema:
+                type: "array"
+                items:
+                  $ref: "#/components/schemas/BillComboResponse"
+  /cinema/cinemas/{cinemaId}:
+    put:
+      summary: "PUT cinema/cinemas/{cinemaId}"
+      operationId: "updateCinema"
+      parameters:
+        - name: "cinemaId"
+          in: "path"
+          required: true
+          schema:
+            type: "integer"
+            format: "int64"
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/CinemaUpdateRequest"
+        required: true
+      responses:
+        "200":
+          description: "OK"
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/CinemaResponse"
+    delete:
+      summary: "DELETE cinema/cinemas/{cinemaId}"
+      operationId: "deleteCinema"
+      parameters:
+        - name: "cinemaId"
+          in: "path"
+          required: true
+          schema:
+            type: "integer"
+            format: "int64"
+      responses:
+        "200":
+          description: "OK"
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/Void"
+  /cinema/cinemas:
+    post:
+      summary: "POST cinema/cinemas"
+      operationId: "createCinema"
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/CinemaCreationRequest"
+        required: true
+      responses:
+        "200":
+          description: "OK"
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/CinemaResponse"
+    get:
+      summary: "GET cinema/cinemas"
+      operationId: "getAllCinemas"
+      responses:
+        "200":
+          description: "OK"
+          content:
+            '*/*':
+              schema:
+                type: "array"
+                items:
+                  $ref: "#/components/schemas/CinemaResponse"
+components:
+  schemas:
+    UserUpdateRequest:
+      type: "object"
+      properties:
+        username:
+          type: "string"
+        password:
+          type: "string"
+        email:
+          type: "string"
+        role:
+          type: "string"
+    UserResponse:
+      type: "object"
+      properties:
+        userId:
+          type: "integer"
+          format: "int32"
+        username:
+          type: "string"
+        email:
+          type: "string"
+        role:
+          type: "string"
+    UserCreationRequest:
+      type: "object"
+      properties:
+        username:
+          type: "string"
+        password:
+          type: "string"
+        email:
+          type: "string"
+    User:
+      type: "object"
+      properties:
+        userId:
+          type: "integer"
+          format: "int64"
+        username:
+          type: "string"
+        password:
+          type: "string"
+        email:
+          type: "string"
+        role:
+          type: "string"
+    ChangePasswordRequest:
+      type: "object"
+      properties:
+        oldPassword:
+          type: "string"
+        newPassword:
+          type: "string"
+    AuthenticationRequest:
+      type: "object"
+      properties:
+        username:
+          type: "string"
+        password:
+          type: "string"
+    AuthenticationResponse:
+      type: "object"
+      properties:
+        token:
+          type: "string"
+        authenticated:
+          type: "boolean"
+    IntrospectRequest:
+      type: "object"
+      properties:
+        token:
+          type: "string"
+        authenticated:
+          type: "string"
+    IntrospectResponse:
+      type: "object"
+      properties:
+        valid:
+          type: "boolean"
+    ForgotPasswordRequest:
+      type: "object"
+      properties:
+        gmail:
+          type: "string"
+    ResetPasswordRequest:
+      type: "object"
+      properties:
+        code:
+          type: "string"
+        newPassword:
+          type: "string"
+    MovieUpdateRequest:
+      type: "object"
+      properties:
+        movie_id:
+          type: "integer"
+          format: "int64"
+        title:
+          type: "string"
+        description:
+          type: "string"
+        duration:
+          type: "integer"
+          format: "int32"
+        releaseDate:
+          type: "string"
+          format: "date"
+        rating:
+          type: "number"
+          format: "double"
+        typeNames:
+          type: "array"
+          items:
+            type: "string"
+        image:
+          type: "string"
+        trailer:
+          type: "string"
+        director:
+          type: "string"
+    MovieResponse:
+      type: "object"
+      properties:
+        movieId:
+          type: "integer"
+          format: "int32"
+        title:
+          type: "string"
+        description:
+          type: "string"
+        duration:
+          type: "integer"
+          format: "int32"
+        releaseDate:
+          type: "string"
+          format: "date"
+        rating:
+          type: "number"
+          format: "double"
+        types:
+          type: "array"
+          items:
+            type: "string"
+        image:
+          type: "string"
+        trailer:
+          type: "string"
+        director:
+          type: "string"
+    MovieCreationRequest:
+      type: "object"
+      properties:
+        movie_id:
+          type: "integer"
+          format: "int64"
+        title:
+          type: "string"
+        description:
+          type: "string"
+        duration:
+          type: "integer"
+          format: "int32"
+        releaseDate:
+          type: "string"
+          format: "date"
+        rating:
+          type: "number"
+          format: "double"
+        typeNames:
+          type: "array"
+          items:
+            type: "string"
+        image:
+          type: "string"
+        trailer:
+          type: "string"
+        director:
+          type: "string"
+    Void:
+      type: "object"
+      properties: { }
+    RoomUpdateRequest:
+      type: "object"
+      properties:
+        name:
+          type: "string"
+        cinemaId:
+          type: "integer"
+          format: "int64"
+        seatCount:
+          type: "integer"
+          format: "int32"
+        status:
+          type: "string"
+    RoomResponse:
+      type: "object"
+      properties:
+        roomId:
+          type: "integer"
+          format: "int64"
+        cinemaId:
+          type: "integer"
+          format: "int64"
+        CinemaName:
+          type: "string"
+        name:
+          type: "string"
+        seatCount:
+          type: "integer"
+          format: "int32"
+        status:
+          type: "string"
+    RoomCreationRequest:
+      type: "object"
+      properties:
+        name:
+          type: "string"
+        cinemaId:
+          type: "integer"
+          format: "int64"
+        seatCount:
+          type: "integer"
+          format: "int32"
+    ShowtimeUpdateRequest:
+      type: "object"
+      properties:
+        movieId:
+          type: "integer"
+          format: "int64"
+        roomId:
+          type: "integer"
+          format: "int64"
+        status:
+          type: "string"
+        showDate:
+          type: "string"
+          format: "date"
+        startTime:
+          type: "string"
+          format: "partial-time"
+    ShowtimeResponse:
+      type: "object"
+      properties:
+        showtimeId:
+          type: "integer"
+          format: "int64"
+        title:
+          type: "string"
+        roomId:
+          type: "integer"
+          format: "int64"
+        name:
+          type: "string"
+        cinemaName:
+          type: "string"
+        showDate:
+          type: "string"
+          format: "date"
+        status:
+          type: "string"
+        startTime:
+          type: "string"
+          format: "partial-time"
+        endTime:
+          type: "string"
+          format: "partial-time"
+    ShowtimeCreationRequest:
+      type: "object"
+      properties:
+        movieId:
+          type: "integer"
+          format: "int64"
+        roomId:
+          type: "integer"
+          format: "int64"
+        showDate:
+          type: "string"
+          format: "date"
+        startTime:
+          type: "string"
+          format: "partial-time"
+    SeatResponse:
+      type: "object"
+      properties:
+        seatId:
+          type: "integer"
+          format: "int64"
+        seatStatus:
+          type: "string"
+    BigDecimal:
+      type: "object"
+      properties: { }
+    TicketCreationRequest:
+      type: "object"
+      properties:
+        ticketId:
+          type: "integer"
+          format: "int64"
+        userId:
+          type: "integer"
+          format: "int64"
+        seatId:
+          type: "integer"
+          format: "int64"
+        ticketName:
+          type: "string"
+        showtimeId:
+          type: "integer"
+          format: "int64"
+        price:
+          $ref: "#/components/schemas/BigDecimal"
+        billId:
+          type: "integer"
+          format: "int64"
+    TicketResponse:
+      type: "object"
+      properties:
+        ticketId:
+          type: "integer"
+          format: "int64"
+        userId:
+          type: "integer"
+          format: "int64"
+        seatId:
+          type: "integer"
+          format: "int64"
+        showtimeId:
+          type: "integer"
+          format: "int64"
+        bookingDate:
+          type: "string"
+          format: "date-time"
+        ticketName:
+          type: "string"
+        price:
+          $ref: "#/components/schemas/BigDecimal"
+        billId:
+          type: "integer"
+          format: "int64"
+    ComboUpdateRequest:
+      type: "object"
+      properties:
+        name:
+          type: "string"
+        description:
+          type: "string"
+        price:
+          $ref: "#/components/schemas/BigDecimal"
+    ComboResponse:
+      type: "object"
+      properties:
+        comboId:
+          type: "integer"
+          format: "int64"
+        name:
+          type: "string"
+        description:
+          type: "string"
+        price:
+          $ref: "#/components/schemas/BigDecimal"
+    ComboCreationRequest:
+      type: "object"
+      properties:
+        name:
+          type: "string"
+        description:
+          type: "string"
+        price:
+          $ref: "#/components/schemas/BigDecimal"
+    BillUpdateRequest:
+      type: "object"
+      properties:
+        userId:
+          type: "integer"
+          format: "int64"
+        paymentStatus:
+          type: "string"
+        paymentMethod:
+          type: "string"
+    BillComboResponse:
+      type: "object"
+      properties:
+        billComboId:
+          type: "integer"
+          format: "int64"
+        billId:
+          type: "integer"
+          format: "int64"
+        comboId:
+          type: "integer"
+          format: "int64"
+        quantity:
+          type: "integer"
+          format: "int64"
+        totalPrice:
+          $ref: "#/components/schemas/BigDecimal"
+    BillResponse:
+      type: "object"
+      properties:
+        billId:
+          type: "integer"
+          format: "int64"
+        userId:
+          type: "integer"
+          format: "int64"
+        totalAmount:
+          $ref: "#/components/schemas/BigDecimal"
+        paymentMethod:
+          type: "string"
+        paymentStatus:
+          type: "string"
+        ticketIds:
+          type: "array"
+          items:
+            $ref: "#/components/schemas/TicketResponse"
+        billComboIds:
+          type: "array"
+          items:
+            $ref: "#/components/schemas/BillComboResponse"
+        createdAt:
+          type: "string"
+          format: "date-time"
+        paymentAt:
+          type: "string"
+          format: "date-time"
+    BillCreationRequest:
+      type: "object"
+      properties:
+        userId:
+          type: "integer"
+          format: "int64"
+        paymentMethod:
+          type: "string"
+        ticketId:
+          type: "array"
+          items:
+            type: "integer"
+            format: "int64"
+        comboId:
+          type: "array"
+          items:
+            type: "integer"
+            format: "int64"
+        paymentAt:
+          type: "string"
+          format: "date-time"
+    BillComboCreationRequest:
+      type: "object"
+      properties:
+        billId:
+          type: "integer"
+          format: "int64"
+        comboId:
+          type: "integer"
+          format: "int64"
+        quantity:
+          type: "integer"
+          format: "int64"
+    CinemaUpdateRequest:
+      type: "object"
+      properties:
+        name:
+          type: "string"
+        address:
+          type: "string"
+        status:
+          type: "string"
+    CinemaResponse:
+      type: "object"
+      properties:
+        cinemaId:
+          type: "integer"
+          format: "int64"
+        name:
+          type: "string"
+        address:
+          type: "string"
+        status:
+          type: "string"
+    CinemaCreationRequest:
+      type: "object"
+      properties:
+        name:
+          type: "string"
+        address:
+          type: "string"
