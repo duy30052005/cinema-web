@@ -37,6 +37,21 @@ Dự án cung cấp hệ thống Backend RESTful API mạnh mẽ cho nền tản
 * Sử dụng **Spring Boot Actuator** để theo dõi "sức khỏe" (health checks) của ứng dụng.
 * Sử dụng **Zalando Logbook** để ghi log chi tiết các HTTP request/response, hỗ trợ đắc lực cho quá trình gỡ lỗi (debugging).
 
+## 📖 Tài liệu API (API Documentation)
+Hệ thống cung cấp tài liệu API chi tiết theo chuẩn **OpenAPI 3.1**, toàn bộ đặc tả được định nghĩa tại file `demo-openapi.yaml` ở thư mục gốc của dự án.
+
+Để xem chi tiết các Endpoints (GET, POST, PUT, DELETE) và cấu trúc dữ liệu (Schemas), bạn có thể sử dụng một trong hai cách sau:
+
+**Cách 1: Xem giao diện trực quan trực tuyến (Swagger Editor)**
+1. Truy cập trang web [Swagger Editor](https://editor.swagger.io/).
+2. Copy toàn bộ nội dung trong file `open-api.yaml` của repository này.
+3. Dán vào khung soạn thảo bên trái trang web. Giao diện tài liệu API tương tác sẽ tự động được render ở khung bên phải.
+
+**Cách 2: Import vào Postman (Dùng để test API)**
+1. Mở ứng dụng Postman trên máy của bạn.
+2. Nhấn nút **Import** -> Chọn tab **File** và tải file `open-api.yaml` lên (hoặc dán trực tiếp Raw link của file từ GitHub).
+3. Postman sẽ tự động sinh ra một Collection hoàn chỉnh chứa toàn bộ các API đã được cấu hình sẵn tham số (Params/Body), giúp bạn dễ dàng gửi request test hệ thống.
+
 ## 📂 Cấu trúc mã nguồn cơ bản
 ```text
 src/main/java/com/example/demo
