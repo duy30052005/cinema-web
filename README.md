@@ -1,14 +1,13 @@
 # 🎬 Cinema Booking System - Backend API
 
 ## 📝 Giới thiệu
-Dự án cung cấp hệ thống Backend RESTful API mạnh mẽ cho nền tảng đặt vé xem phim trực tuyến. Hệ thống được thiết kế theo kiến trúc phân tầng chuẩn (Controller - Service - Repository), đảm bảo hiệu năng cao, bảo mật chặt chẽ, hỗ trợ tương tác thời gian thực và được đóng gói Docker để vận hành linh hoạt trên môi trường Cloud.
+Dự án cung cấp hệ thống Backend RESTful API mạnh mẽ cho nền tảng đặt vé xem phim trực tuyến. Hệ thống được thiết kế theo kiến trúc phân tầng chuẩn (Controller - Service - Repository), đảm bảo hiệu năng cao, bảo mật chặt chẽ và được đóng gói Docker để vận hành linh hoạt trên môi trường Cloud.
 
 ## 🚀 Công nghệ sử dụng
 * **Ngôn ngữ:** Java 21
 * **Framework chính:** Spring Boot 3.4.5
 * **Cơ sở dữ liệu:** PostgreSQL & Spring Data JPA
 * **Bảo mật:** Spring Security, OAuth2 Resource Server (JWT)
-* **Real-time:** Spring WebSocket
 * **Mapping & Tiện ích:** MapStruct, Lombok
 * **Email Service:** Spring Boot Mail, Resend API
 * **DevOps & Cloud:** Docker (Multi-stage build), Render PaaS
@@ -26,19 +25,15 @@ Dự án cung cấp hệ thống Backend RESTful API mạnh mẽ cho nền tản
 * Phân quyền truy cập rõ ràng giữa các Role: `ADMIN` (quản lý rạp, lịch chiếu, phim) và `USER` (đặt vé, xem lịch sử).
 * Mã hóa mật khẩu an toàn.
 
-### 3. Tương tác Thời gian thực (Real-time Features)
-* Tích hợp **Spring WebSocket** cho phép truyền tải dữ liệu hai chiều liên tục giữa client và server.
-* Ứng dụng xây dựng phân hệ nhắn tin (Chat) trực tuyến và có thể mở rộng cho tính năng cập nhật sơ đồ ghế ngồi (Seat Booking) theo thời gian thực để tránh kẹt vé.
-
-### 4. Dịch vụ Thông báo (Notification Service)
+### 3. Dịch vụ Thông báo (Notification Service)
 * Tích hợp **Resend API** và **JavaMailSender** để xử lý hàng đợi gửi email.
 * Tự động gửi email xác nhận đặt vé, gửi mã OTP hoặc thông báo đăng ký tài khoản thành công cho khách hàng.
 
-### 5. Quản lý & Theo dõi (Monitoring)
+### 4. Quản lý & Theo dõi (Monitoring)
 * Sử dụng **Spring Boot Actuator** để theo dõi "sức khỏe" (health checks) của ứng dụng.
 * Sử dụng **Zalando Logbook** để ghi log chi tiết các HTTP request/response, hỗ trợ đắc lực cho quá trình gỡ lỗi (debugging).
 
-### 6. Triển khai Cloud (Docker & Render)
+### 5. Triển khai Cloud (Docker & Render)
 * Giải quyết hạn chế môi trường Java native trên nền tảng Cloud (Render) bằng cách đóng gói ứng dụng với **Docker**.
 * Sử dụng chiến lược **Multi-stage build**: Tách biệt môi trường `maven:alpine` (để build mã nguồn) và môi trường `eclipse-temurin:21-jdk` (để chạy ứng dụng), giúp tối ưu hóa dung lượng image và bảo mật mã nguồn.
 
@@ -60,7 +55,7 @@ Hệ thống cung cấp tài liệu API chi tiết theo chuẩn **OpenAPI 3.1**,
 ## 📂 Cấu trúc mã nguồn cơ bản
 ```text
 src/main/java/com/example/demo
-├── config/         # Cấu hình Security, WebSocket, CORS
+├── config/         # Cấu hình Security, CORS
 ├── controller/     # Tiếp nhận các HTTP Request (REST API)
 ├── dto/            # Data Transfer Objects & MapStruct Mappers
 ├── entity/         # Các lớp mô hình hóa cơ sở dữ liệu (PostgreSQL)
